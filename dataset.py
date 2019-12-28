@@ -36,6 +36,11 @@ class Dataset(object):
         
         :param path: (String) The path of the csv file
         :return: (Dictionary) A Dictionary containing the dataset, and the features of that csv file
+            {
+                'name': <String>,
+                'X': <Numpy Array>,
+                'y': <Numpy Array>
+            }
         """
         try:
             # Ask user for file path if not mentioned
@@ -50,9 +55,9 @@ class Dataset(object):
             
             # Get target value
             if 'healthy' in str(path).lower():
-                y = np.zeros((X.size, 1))
+                y = np.zeros((X.shape[0], 1))
             elif 'broken' in str(path).lower():
-                y = np.ones((X.size, 1))
+                y = np.ones((X.shape[0], 1))
             else:
                 console.log('Could not determine whether %s is \'healthy\' or \'broken\'.' % filename,
                             console.LOG_WARNING)
@@ -73,6 +78,10 @@ class Dataset(object):
         This method returns the names of all the files from the 2 project directories
         
         :return: (Dictionary) A dictionary containing 2 Lists (each with the filenames from their respective directory)
+            {
+                'healthy_data': <List<String>>,
+                'broken_data': <List<String>>
+            }
         """
         try:
             healthy_data_filenames = glob.glob(self.csvs_folder['healthy_data'] + '/*.csv')
@@ -93,6 +102,11 @@ class Dataset(object):
         This method trims the filenames from the 'self.csv_filenames' parameter to reduce complexity
         
         :param number: (Integer) The number of filenames you want per folder (Default: All of them)
+        :return: (Dictionary) A dictionary containing 2 Lists (each with a subset of filenames from their respective directory)
+            {
+                'healthy_data': <List<String>>,
+                'broken_data': <List<String>>
+            }
         """
         try:
             if number is None:
@@ -128,5 +142,81 @@ class Dataset(object):
             console.log(error_message, console.LOG_ERROR)
             return False
 
+    def get_all_datasets(self):
+        """
+        This method returns all the datasets from the 'self.csv_filenames' files
+        
+        :return: (Dictionary) A dictionary containing the features and targets for all the files selected
+                {
+                    'healthy_data': [
+                    {
+                        'name': <String>
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>
+                    }],
+                    'broken_data': [
+                    {
+                        'name': <String>
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>
+                    }]
+                    
+                }
+        """
+        try:
+            datasets = {
+                    'healthy_data': [],
+                    'broken_data': []
+                    }
+            # Get the Healthy Datasets
+            for path in self.csv_filenames['healthy_data']:
+                datasets['healthy_data'].append(self.get_dataset(path))
+                
+            # Get the Broken Datasets
+            for path in self.csv_filenames['broken_data']:
+                datasets['broken_data'].append(self.get_dataset(path))
+
+            return datasets
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
+    def combine_datasets(self, datasets):
+        """
+        This method combines all the datasets from the 2 types of data into one dataset
+        
+        :param datasets: (Dictionary) The result returned by the 'self.get_all_datasets' method
+        :returns: (Dictionary) A single dictionary containing all the features and targets in one place
+        """
+        try:
+            X = np.array(())
+            y = np.array(())
+            
+            # Append the Healthy datasets
+            for dataset in datasets['healthy_data']:
+                if X.shape[0] == 0 or y.shape[0] == 0:
+                    X = dataset['X']
+                    y = dataset['y']
+                else:
+                    X = np.concatenate((X, dataset['X']))
+                    y = np.concatenate((y, dataset['y']))
+                
+            # Append the Broken datasets
+            for dataset in datasets['broken_data']:
+                if X.shape[0] == 0 or y.shape[0] == 0:
+                    X = dataset['X']
+                    y = dataset['y']
+                else:
+                    X = np.concatenate((X, dataset['X']))
+                    y = np.concatenate((y, dataset['y']))
+                    
+            return {
+                    'X': X,
+                    'y': y
+                    }
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
     
 dataset = Dataset()
