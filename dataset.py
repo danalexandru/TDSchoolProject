@@ -21,8 +21,11 @@ class Dataset(object):
     This class deals with the datasets 
     """
     def __init__(self):
-        pass
-    
+        self.csvs_folder = {
+        'main': 'csvs',
+        'healthy_data': 'csvs/Healthy Data',
+        'brokentooth_data': 'csvs/BrokenTooth Data'}
+
     
     def get_dataset(self, path=None):
         """
@@ -61,6 +64,24 @@ class Dataset(object):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
+
+    def get_all_csv_filenames(self):
+        """
+        This method returns the names of all the files from the 2 project directories
         
+        :return: (Dictionary) A dictionary containing 2 Lists (each with the filenames from their respective directory)
+        """
+        try:
+            healthy_data_filenames = glob.glob(self.csvs_folder['healthy_data'] + '/*.csv')
+            brokentooth_data_filenames = glob.glob(self.csvs_folder['brokentooth_data'] + '/*.csv')
+            
+            return {
+                    'healthy_data': healthy_data_filenames,
+                    'broken_data': brokentooth_data_filenames
+                    }
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
         
+    
 dataset = Dataset()
