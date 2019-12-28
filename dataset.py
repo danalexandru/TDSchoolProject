@@ -8,10 +8,12 @@ Created on Fri Dec 27 16:50:11 2019
 from globals import console
 from tkinter.filedialog import askopenfilename
 from random import randrange
+from numbers import Number
 import glob
 import os
 import ntpath
 
+from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
 
@@ -217,6 +219,78 @@ class Dataset(object):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
-    
+
+    def split_dataset(self, dataset, test_size=0.2):
+        """
+        This method splits the dataset into training, valid and test set
+        
+        :param dataset: (Dictionary) A dictionary containing the features and targets of the current dataset
+            {
+                'X': <Numpy Array>,
+                'y': <Numpy Array>
+            }
+        :param test_size: The percentage of the test and valid sets
+        :return: (Dictionaries) 3 Dictionaries containing the features and targets for the training, valid and test sets
+            of type 
+            {
+                'X': <Numpy Array>,
+                'y': <Numpy Array>
+            }
+        """
+        try:
+            if not isinstance(test_size, Number) or \
+                    test_size < 0 or \
+                    test_size > 1:
+                console.log('Invalid \"test_size\" value. It should be a number between (0, 1)', console.LOG_WARNING)
+                return False
+            
+            # Initialize the training, valid and test sets dictionaries
+            dict_training_set = {
+                    'X': None,
+                    'y': None
+                    }
+            
+            dict_valid_set = {
+                    'X': None,
+                    'y': None
+                    }
+            
+            dict_test_set = {
+                    'X': None,
+                    'y': None
+                    }
+            
+            # Intermediary step (Get the test set)
+            (
+                dict_training_set['X'],
+                dict_test_set['X'],
+                dict_training_set['y'],
+                dict_test_set['y']
+            ) = train_test_split(
+                dataset['X'],
+                dataset['y'],
+                test_size=test_size,
+                random_state=0
+            )
+            
+            # Final step (Get the trainign and valid set)
+            (
+                dict_training_set['X'],
+                dict_valid_set['X'],
+                dict_training_set['y'],
+                dict_valid_set['y']
+            ) = train_test_split(
+                dict_training_set['X'],
+                dict_training_set['y'],
+                test_size=test_size,
+                random_state=0
+            )
+            
+            return dict_training_set, dict_valid_set, dict_test_set
+        
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+        
     
 dataset = Dataset()
