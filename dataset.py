@@ -7,6 +7,7 @@ Created on Fri Dec 27 16:50:11 2019
 # %% Imports
 from globals import console
 from tkinter.filedialog import askopenfilename
+from random import randrange
 import glob
 import os
 import ntpath
@@ -24,7 +25,9 @@ class Dataset(object):
         self.csvs_folder = {
         'main': 'csvs',
         'healthy_data': 'csvs/Healthy Data',
-        'brokentooth_data': 'csvs/BrokenTooth Data'}
+        'brokentooth_data': 'csvs/BrokenTooth Data'
+        }
+        self.csv_filenames = {}
 
     
     def get_dataset(self, path=None):
@@ -75,13 +78,55 @@ class Dataset(object):
             healthy_data_filenames = glob.glob(self.csvs_folder['healthy_data'] + '/*.csv')
             brokentooth_data_filenames = glob.glob(self.csvs_folder['brokentooth_data'] + '/*.csv')
             
-            return {
+            self.csv_filenames = {
                     'healthy_data': healthy_data_filenames,
                     'broken_data': brokentooth_data_filenames
                     }
+            
+            return self.csv_filenames
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
+
+    def trim_filenames(self, number=None):
+        """
+        This method trims the filenames from the 'self.csv_filenames' parameter to reduce complexity
         
+        :param number: (Integer) The number of filenames you want per folder (Default: All of them)
+        """
+        try:
+            if number is None:
+                return self.csv_filenames
+            elif not isinstance(number, int) or number <= 0:
+                console.log('Invalid \'number\' value %s. It should be a positive Integer.' % str(number),
+                            console.LOG_WARNING)
+                return False
+            
+            # Get the number of files in a folder
+            N = len(self.csv_filenames['healthy_data'])
+            
+            csv_filenames = {
+                    'healthy_data': [],
+                    'broken_data': []
+                    }
+
+            i = 0
+            while i < number:
+                index = randrange(N)
+                
+                if self.csv_filenames['healthy_data'][index] in csv_filenames['healthy_data'] or \
+                    self.csv_filenames['broken_data'][index] in csv_filenames['broken_data']:
+                        continue
+                    
+                csv_filenames['healthy_data'].append(self.csv_filenames['healthy_data'][index])
+                csv_filenames['broken_data'].append(self.csv_filenames['broken_data'][index])
+                i += 1
+                
+            self.csv_filenames = csv_filenames
+            return self.csv_filenames
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+
     
 dataset = Dataset()
