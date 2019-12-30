@@ -16,6 +16,7 @@ import ntpath
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
+import scipy.io as sio
 
 
 # %% class Dataset
@@ -292,5 +293,20 @@ class Dataset(object):
             console.log(error_message, console.LOG_ERROR)
             return False
         
-    
+    def save_split_dataset_as_mat(self, dict_training_set, dict_valid_set, dict_test_set):
+        """
+        This method saves the 'dict_training_set', 'dict_valid_set', and 'dict_test_set' JSONs returned by the 
+            'split_dataset' method as a .mat file in order to be used in matlab
+        """
+        try:
+            sio.savemat('training_set.mat', dict_training_set)
+            sio.savemat('valid_set.mat', dict_valid_set)
+            sio.savemat('test_set.mat', dict_test_set)
+            
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+        
+        
 dataset = Dataset()
