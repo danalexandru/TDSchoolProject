@@ -103,4 +103,5 @@ class GetCsvFiles(object):
             console.log(error_message, console.LOG_ERROR)
             return False
     
+
 get_csv_files = GetCsvFiles()

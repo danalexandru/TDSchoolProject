@@ -27,13 +27,13 @@ class Console(object):
         # endregion console log flags
 
         # region messages color codes
-        self._CODE_RED = '\033[1;31;49m'
-        self._CODE_YELLOW = '\033[1;33;49m'
-        self._CODE_GREEN = '\033[1;32;49m'
-        self._CODE_BLUE = '\033[1;34;49m'
-        self._CODE_WHITE = '\033[1;39;49m'
-        self._CODE_HIGHLIGHT = '\033[1;95;49m'
-        self._CODE_DEFAULT = '\033[1;39;49m'
+        self._CODE_RED = '\033[0;31;49m'
+        self._CODE_YELLOW = '\033[0;33;49m'
+        self._CODE_GREEN = '\033[0;32;49m'
+        self._CODE_BLUE = '\033[0;34;49m'
+        self._CODE_WHITE = '\033[0;39;49m'
+        self._CODE_HIGHLIGHT = '\033[0;95;49m'
+        self._CODE_DEFAULT = '\033[0;39;49m'
         # endregion messages color codes
 
         # region message parameters
@@ -104,19 +104,27 @@ class Console(object):
 
             dict_message_struct = {
                 'header': ('%s %s: %s\n' % (self._current_color_code, self._label, self._CODE_HIGHLIGHT)),
-                'filename': ('\t- Filename: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._relative_filename), self._CODE_HIGHLIGHT)),
+                'filename': ('%s\t- Filename: %s %s %s\n' % (
+                    self._current_color_code, self._CODE_DEFAULT, str(self._relative_filename), self._CODE_HIGHLIGHT)),
                 'line_number': '',
-                'process': ('\t- Process: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._process_name), self._CODE_HIGHLIGHT)),
-                'message': ('\t- Message: %s \"%s\" %s\n' % (
-                    self._CODE_DEFAULT, str(self._message), self._CODE_HIGHLIGHT)),
-                'delimiter': ('%s------------------------------\n' % self._CODE_DEFAULT)
+                'process': ('%s\t- Process: %s %s %s\n' % (
+                    self._current_color_code, self._CODE_DEFAULT, str(self._process_name), self._CODE_HIGHLIGHT)),
+                'message': ('%s\t- Message: %s \"%s\" %s\n' % (
+                    self._current_color_code,
+                    self._CODE_DEFAULT, 
+                    str(self._message), 
+                    self._CODE_HIGHLIGHT)
+                ),
+                'delimiter': ('%s------------------------------%s\n' % (self._current_color_code, self._CODE_DEFAULT))
             }
 
             if self._line_number != 'N/A':
-                dict_message_struct['line_number'] = ('\t- Line Number: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._line_number), self._CODE_HIGHLIGHT))
+                dict_message_struct['line_number'] = ('%s\t- Line Number: %s %s %s\n' % (
+                    self._current_color_code, 
+                    self._CODE_DEFAULT, 
+                    str(self._line_number), 
+                    self._CODE_HIGHLIGHT)
+                )
 
             print('%s%s%s%s%s%s%s' % (dict_message_struct['delimiter'],
                                       dict_message_struct['header'],
@@ -141,20 +149,28 @@ class Console(object):
                 self._line_number = 'N/A'
 
             dict_message_struct = {
-                'header': ('%s %s %s:\n' % (self._current_color_code, self._label, self._CODE_HIGHLIGHT)),
-                'filename': ('\t- Filename: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._relative_filename), self._CODE_HIGHLIGHT)),
+                'header': ('%s %s: %s\n' % (self._current_color_code, self._label, self._CODE_HIGHLIGHT)),
+                'filename': ('%s\t- Filename: %s %s %s\n' % (
+                    self._current_color_code, self._CODE_DEFAULT, str(self._relative_filename), self._CODE_HIGHLIGHT)),
                 'line_number': '',
-                'process': ('\t- Process: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._process_name), self._CODE_HIGHLIGHT)),
-                'message': ('\t- Message: %s \"%s\" %s\n' % (
-                    self._CODE_DEFAULT, str(self._message), self._CODE_HIGHLIGHT)),
-                'delimiter': ('%s------------------------------\n' % self._CODE_DEFAULT)
+                'process': ('%s\t- Process: %s %s %s\n' % (
+                    self._current_color_code, self._CODE_DEFAULT, str(self._process_name), self._CODE_HIGHLIGHT)),
+                'message': ('%s\t- Message: %s \"%s\" %s\n' % (
+                    self._current_color_code,
+                    self._CODE_DEFAULT, 
+                    str(self._message), 
+                    self._CODE_HIGHLIGHT)
+                ),
+                'delimiter': ('%s------------------------------%s\n' % (self._current_color_code, self._CODE_DEFAULT))
             }
 
             if self._line_number != 'N/A':
-                dict_message_struct['line_number'] = ('\t- Line Number: %s %s %s\n' % (
-                    self._CODE_DEFAULT, str(self._line_number), self._CODE_HIGHLIGHT))
+                dict_message_struct['line_number'] = ('%s\t- Line Number: %s %s %s\n' % (
+                    self._current_color_code, 
+                    self._CODE_DEFAULT, 
+                    str(self._line_number), 
+                    self._CODE_HIGHLIGHT)
+                )
 
             print('%s%s%s%s%s%s%s' % (dict_message_struct['delimiter'],
                                       dict_message_struct['header'],
