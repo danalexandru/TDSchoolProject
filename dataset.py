@@ -74,7 +74,9 @@ class Dataset(object):
             return {
                     'name': filename,
                     'X': X,
-                    'y': y
+                    'y': y,
+                    'Ts': int(filename[5:]),
+                    'frequency': int(filename[1:3])
                     }
             
         except Exception as error_message:

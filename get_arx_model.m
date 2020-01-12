@@ -24,10 +24,11 @@ valid_data_m = misdata(valid_data);
 % nk = delayest(training_data_m,2,2,0,5,160000);
 NN = struc(1:4, 1:4, 0);
 
+
 %% Get the ARX polynomial orders
-V = arxstruc(training_data_m, valid_data_m, NN);
+V = arxstruc(training_data_m(:,:,1), valid_data_m(:,:,1), [1 2 3; 1 3 4]);
 order = selstruc(V, 0);
 
-mode_arx = arx(training_data_m, order);
+mode_arx = arx(training_data_m(:,:,1), order)
 
 end
