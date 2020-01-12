@@ -24,4 +24,8 @@ kustosis_measure = get_kurtosis(dataset);
 dataset = healthy_data{1, 1};
 skewness_measure = get_skewness(dataset);
 
+%% Get the entropy of the sensors
+dataset = healthy_data{1, 1};
+signal_entropy = get_signal_entropy(dataset);
+
 end
