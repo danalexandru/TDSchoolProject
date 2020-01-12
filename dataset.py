@@ -47,7 +47,9 @@ class Dataset(object):
             {
                 'name': <String>,
                 'X': <Numpy Array>,
-                'y': <Numpy Array>
+                'y': <Numpy Array>,
+                'Ts': <Integer>,
+                'frequency': <Integer>
             }
         """
         try:
@@ -160,15 +162,19 @@ class Dataset(object):
                 {
                     'healthy_data': [
                     {
-                        'name': <String>
+                        'name': <String>,
                         'X': <Numpy Array>,
-                        'y': <Numpy Array>
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
                     }],
                     'broken_data': [
                     {
-                        'name': <String>
+                        'name': <String>,
                         'X': <Numpy Array>,
-                        'y': <Numpy Array>
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
                     }]
                     
                 }
@@ -314,7 +320,49 @@ class Dataset(object):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
-
+        
+    def save_all_datasets_as_mat(self, dict_datasets):
+        """
+        This method saves the datasets recovered from the csv gearbox csv files into mats. Note that this method is 
+            different from the 'save_split_dataset_as_mat' method, since it doesn't save the training, valid and test
+            sets, but takes all the datasets (uncombined) and saves them basen on their names
+            
+        :param dict_datasets: (Dictionary) A dictionary containing the features and targets for all the files selected
+        {
+            'healthy_data': [
+            {
+                'name': <String>,
+                'X': <Numpy Array>,
+                'y': <Numpy Array>,
+                'Ts': <Integer>,
+                'frequency': <Integer>
+            }],
+            'broken_data': [
+            {
+                'name': <String>,
+                'X': <Numpy Array>,
+                'y': <Numpy Array>,
+                'Ts': <Integer>,
+                'frequency': <Integer>
+            }]
+            
+        }
+        :return: Boolean (True or False)            
+        """
+        try:
+            # Save the healthy data
+            for dataset in dict_datasets['healthy_data']:
+                sio.savemat(('%s.mat' % dataset['name']), dataset)
+                
+            # Save the healthy data
+            for dataset in dict_datasets['broken_data']:
+                sio.savemat(('%s.mat' % dataset['name']), dataset)
+                
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
     def clean_dataset(self, dict_dataset):
         """
         This method cleans a dataset of it's NaN values
