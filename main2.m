@@ -6,7 +6,9 @@ clc;
 clear;
 
 %% Get all datasets
-load('datasets.mat');
+S = load('datasets.mat');
+broken_data = S.broken_data;
+healthy_data = S.healthy_data;
 
 %% Get the medium frequencies
 dataset = healthy_data{1, 1};

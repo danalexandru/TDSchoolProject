@@ -7,6 +7,7 @@ X = dataset.X;
 Ts = dataset.Ts;
 freq = dataset.frequency;
 
+X = remove_invalid_data(X);
 
 %% Initialize the mean_freq variable
 N = length(X);
