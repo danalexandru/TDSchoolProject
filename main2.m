@@ -28,4 +28,8 @@ skewness_measure = get_skewness(dataset);
 dataset = healthy_data(1).files;
 signal_entropy = get_signal_entropy(dataset);
 
+%% Get the entropy of the sensors
+dataset = healthy_data(1).files;
+iqr_data = get_iqr(dataset);
+
 end
