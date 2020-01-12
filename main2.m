@@ -20,4 +20,8 @@ freq_magn = get_frequencies_magnitude(dataset);
 dataset = healthy_data{1, 1};
 kustosis_measure = get_kurtosis(dataset);
 
+%% Get the skewness for each sensor
+dataset = healthy_data{1, 1};
+skewness_measure = get_skewness(dataset);
+
 end
