@@ -350,14 +350,7 @@ class Dataset(object):
         :return: Boolean (True or False)            
         """
         try:
-            # Save the healthy data
-            for dataset in dict_datasets['healthy_data']:
-                sio.savemat(('%s.mat' % dataset['name']), dataset)
-                
-            # Save the healthy data
-            for dataset in dict_datasets['broken_data']:
-                sio.savemat(('%s.mat' % dataset['name']), dataset)
-                
+            sio.savemat('datasets.mat', dict_datasets)
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
