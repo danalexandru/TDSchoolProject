@@ -12,4 +12,8 @@ load('datasets.mat');
 dataset = healthy_data{1, 1};
 mean_freq = get_medium_frequencies(dataset);
 
+%% Get the frequency magnitude
+dataset = healthy_data{1, 1};
+freq_magn = get_frequencies_magnitude(dataset);
+
 end
