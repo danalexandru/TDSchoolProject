@@ -8,4 +8,8 @@ clear;
 %% Get all datasets
 load('datasets.mat');
 
+%% Get the medium frequencies
+dataset = healthy_data{1, 1};
+mean_freq = get_medium_frequencies(dataset);
+
 end
