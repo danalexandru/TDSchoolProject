@@ -33,11 +33,24 @@ class Dataset(object):
         self.csvs_folder = {
         'main': 'csvs',
         'healthy_data': 'csvs/Healthy Data',
-        'brokentooth_data': 'csvs/BrokenTooth Data'
+        'broken_data': 'csvs/BrokenTooth Data'
         }
         self.csv_filenames = {}
-
-    
+        
+        self.matlab_results_folder = {
+                'main': 'csvs/Matlab Results',
+                'healthy_data': 'csvs/Matlab Results/Healthy Data',
+                'broken_data': 'csvs/Matlab Results/BrokenTooth Data'}
+        self.matlab_results_filenames = {}
+        self.matlab_results_keywords = [
+                'mean_freq',
+                'freq_magn',
+                'kustosis',
+                'skewness',
+                'entropy',
+                'iqr'
+                ]
+        
     def get_dataset(self, path=None):
         """
         This method returns the dataset of a csv file
@@ -97,11 +110,11 @@ class Dataset(object):
         """
         try:
             healthy_data_filenames = glob.glob(self.csvs_folder['healthy_data'] + '/*.csv')
-            brokentooth_data_filenames = glob.glob(self.csvs_folder['brokentooth_data'] + '/*.csv')
+            broken_data_filenames = glob.glob(self.csvs_folder['broken_data'] + '/*.csv')
             
             self.csv_filenames = {
                     'healthy_data': healthy_data_filenames,
-                    'broken_data': brokentooth_data_filenames
+                    'broken_data': broken_data_filenames
                     }
             
             return self.csv_filenames
@@ -392,7 +405,7 @@ class Dataset(object):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
-    
+        
     def plot_outputs(self, y_real, y_predicted):
         """
         This method plots the real targets and the predicted targets
@@ -423,7 +436,83 @@ class Dataset(object):
             console.log(error_message, console.LOG_ERROR)
             return False
 
-
+    def get_all_matlab_csv_filenames(self, method):
+        """
+        This method returns all the .mat dictionaries filenames saved in the self.matlab_results_folder
+        
+        :param method: (String) The method that was used in matlab (Must be one of the self.matlab_results_keywords)
+        :return: (List) A list containing all the .mat filenames of the matlab results saved in the 
+            self.matlab_results_folder
+        """
+        try:
+            if method not in self.matlab_results_keywords:
+                console.log('Unrecognized method \'%s\'. It should be one of these methods: \n%s.' % 
+                            (
+                                    str(method),
+                                    str(self.matlab_results_keywords)
+                                    ), 
+                            console.LOG_WARNING
+                            )
+                return False
+                    
+            healthy_data_filenames = glob.glob(self.matlab_results_folder['healthy_data'] + '/' + method + '/*.csv')
+            broken_data_filenames = glob.glob(self.matlab_results_folder['broken_data'] + '/' + method + '/*.csv')
+            
+            self.matlab_results_filenames = {
+                    'healthy_data': healthy_data_filenames,
+                    'broken_data' : broken_data_filenames}
+            
+            return self.matlab_results_filenames
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
+    def get_all_matlab_datasets(self):
+        """
+        This method returns all the datasets calculated and saved in matlab using a specific method. The method was 
+            already specified in the 'self.get_all_matlab_csv_filenames' method. It must be one of the 
+            self.matlab_results_keywords.
+            
+        :return: (Dictionary) A dictionary containing the features and targets for all the files selected
+                {
+                    'healthy_data': [
+                    {
+                        'name': <String>,
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
+                    }],
+                    'broken_data': [
+                    {
+                        'name': <String>,
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
+                    }]
+                    
+                }
+        """
+        try:
+            datasets = {
+                    'healthy_data': [],
+                    'broken_data': []
+                    }
+            
+            # Get the Healthy Datasets
+            for path in self.matlab_results_filenames['healthy_data']:
+                datasets['healthy_data'].append(self.get_dataset(path))
+                
+            # Get the Broken Datasets
+            for path in self.matlab_results_filenames['broken_data']:
+                datasets['broken_data'].append(self.get_dataset(path))
+                
+            return datasets
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
 # %% class SuportVectorClassification
 class SupportVectorClassification(object):
     """
