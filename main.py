@@ -44,45 +44,47 @@ def main(old_ver=None):
         else:
             # %% Get the Matlab datasets
             dataset.get_all_matlab_csv_filenames('mean_freq')
+            dataset.trim_matlab_filenames(1)
             datasets = dataset.get_all_matlab_datasets()
-
-            # %% Train the healthy dataset
-            [dict_h_training_set, dict_h_valid_set, dict_h_test_set] = \
-                dataset.split_dataset(datasets['healthy_data'][0])
-
-            dict_h_training_set, dict_h_valid_set, dict_h_test_set = [
-                dataset.clean_dataset(dict_h_training_set),
-                dataset.clean_dataset(dict_h_valid_set),
-                dataset.clean_dataset(dict_h_test_set)
+            combined_dataset = dataset.combine_datasets(datasets)
+            
+            # %% Split into training, valid and test sets
+            [dict_training_set, dict_valid_set, dict_test_set] = dataset.split_dataset(combined_dataset)
+            [dict_training_set, dict_valid_set, dict_test_set] = [
+                dataset.clean_dataset(dict_training_set),
+                dataset.clean_dataset(dict_valid_set),
+                dataset.clean_dataset(dict_test_set)
             ]
-
-            healthy_model = support_vector_classification.use_linear_kernel()
-            dict_h_predicted_output = support_vector_classification.get_predicted_output(
-                healthy_model,
-                dict_h_training_set,
-                dict_h_valid_set
-            )
-
-            dataset.plot_outputs(dict_h_valid_set['y'], dict_h_predicted_output['y_predicted'])
-
-            # %% Train the broken  dataset
-            [dict_b_training_set, dict_b_valid_set, dict_b_test_set] = \
-                dataset.split_dataset(datasets['broken_data'][0])
-
-            dict_b_training_set, dict_b_valid_set, dict_h_test_set = [
-                dataset.clean_dataset(dict_b_training_set),
-                dataset.clean_dataset(dict_b_valid_set),
-                dataset.clean_dataset(dict_b_test_set)
-            ]
-
-            broken_model = support_vector_classification.use_linear_kernel()
-            dict_b_predicted_output = support_vector_classification.get_predicted_output(
-                broken_model,
-                dict_b_training_set,
-                dict_b_valid_set
-            )
-
-            dataset.plot_outputs(dict_b_valid_set['y'], dict_b_predicted_output['y_predicted'])
+            
+            # %% Use linear kernel SVM
+            model = support_vector_classification.use_linear_kernel()
+            
+            # %% Use polynomial kernel SVM
+            model = support_vector_classification.use_polynomial_kernel()
+ 
+            # %% Use radial basis function kernel SVM
+            model = support_vector_classification.use_radial_basis_function_kernel()
+            
+            # %% Train the SVM and predict the output
+            dict_predic_valid = support_vector_classification.get_predicted_output(model, dict_training_set, dict_valid_set)
+            dataset.plot_outputs(dict_valid_set['y'], dict_predic_valid['y_predicted'], 1)
+            
+            dict_predict_test = support_vector_classification.get_predicted_output(model, dict_training_set, dict_test_set)
+            dataset.plot_outputs(dict_valid_set['y'], dict_predict_test['y_predicted'], 2)
+            
+            # %% Get classification report
+            classification_report = support_vector_classification.get_classification_report(dict_valid_set['y'], dict_predic_valid['y_predicted'])
+            console.log('\n' + classification_report, console.LOG_INFO)
+            
+            classification_report = support_vector_classification.get_classification_report(dict_test_set['y'], dict_predict_test['y_predicted'])
+            console.log('\n' + classification_report, console.LOG_INFO)
+            
+            # %% Get confusion matrix
+            confusion_matrix = support_vector_classification.get_confusion_matrix(dict_valid_set['y'], dict_predic_valid['y_predicted'])
+            console.log('\n' + str(confusion_matrix), console.LOG_INFO)
+            
+            confusion_matrix = support_vector_classification.get_confusion_matrix(dict_test_set['y'], dict_predict_test['y_predicted'])
+            console.log('\n' + str(confusion_matrix), console.LOG_INFO)
             
             # %% Exit
         return True

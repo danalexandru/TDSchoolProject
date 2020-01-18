@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
-
+from sklearn.metrics import confusion_matrix
 
 # %% class Dataset
 class Dataset(object):
@@ -406,7 +406,7 @@ class Dataset(object):
             console.log(error_message, console.LOG_ERROR)
             return False
         
-    def plot_outputs(self, y_real, y_predicted):
+    def plot_outputs(self, y_real, y_predicted, index=1):
         """
         This method plots the real targets and the predicted targets
         
@@ -415,7 +415,7 @@ class Dataset(object):
         :return: Boolean (True or False)
         """
         try:
-            plt.figure(1)
+            plt.figure(index)
             plt.scatter(x=np.arange(y_real.size),
                         y=y_real,
                         color='red',
@@ -509,6 +509,51 @@ class Dataset(object):
                 datasets['broken_data'].append(self.get_dataset(path))
                 
             return datasets
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
+    def trim_matlab_filenames(self, number=None):
+        """
+        This method trims the filenames from the 'self.matlab_results_filenames' parameter to reduce complexity
+        
+        :param number: (Integer) The number of filenames you want per folder (Default: All of them)
+        :return: (Dictionary) A dictionary containing 2 Lists (each with a subset of filenames from their respective directory)
+            {
+                'healthy_data': <List<String>>,
+                'broken_data': <List<String>>
+            }
+        """
+        try:         
+            if number is None:
+                return self.matlab_results_filenames
+            elif not isinstance(number, int) or number <= 0:
+                console.log('Invalid \'number\' value %s. It should be a positive Integer.' % str(number),
+                            console.LOG_WARNING)
+                return False
+            
+            # Get the number of files in a folder
+            N = len(self.matlab_results_filenames['healthy_data'])
+            
+            csv_filenames = {
+                    'healthy_data': [],
+                    'broken_data': []
+                    }
+    
+            i = 0
+            while i < number:
+                index = randrange(N)
+                
+                if self.matlab_results_filenames['healthy_data'][index] in csv_filenames['healthy_data'] or \
+                    self.matlab_results_filenames['broken_data'][index] in csv_filenames['broken_data']:
+                        continue
+                    
+                csv_filenames['healthy_data'].append(self.matlab_results_filenames['healthy_data'][index])
+                csv_filenames['broken_data'].append(self.matlab_results_filenames['broken_data'][index])
+                i += 1
+                
+            self.matlab_results_filenames = csv_filenames
+            return self.csv_filenames
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR)
             return False
@@ -635,7 +680,20 @@ class SupportVectorClassification(object):
             console.log(error_message, console.LOG_ERROR)
             return False
     
-    
+    def get_confusion_matrix(self, y_real, y_predicted):
+        """
+        This method returns on the console the confusion matrix for the real and predicted targets 
+        
+        :param y_real: (Numpy Array) A column vector containing the real target values
+        :param y_predicted: (Numpy Array) A column vector containig the predicted target values
+        :return: (String) The confusion matrix
+        """
+        try:
+            return confusion_matrix(y_real, y_predicted)
+        
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
     
 # %% Exports
 dataset = Dataset()

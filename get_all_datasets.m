@@ -3,7 +3,7 @@
 % 'datasets'.mat file
 function [healthy_data, broken_data] = get_all_datasets()
 %% Load the dataset 
-S = load('datasets.mat');
+S = load('all_datasets.mat');
 
 %% Split the dataset 
 healthy_data = S.healthy_data;
