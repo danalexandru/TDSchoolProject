@@ -70,7 +70,7 @@ def main(old_ver=None):
             dataset.plot_outputs(dict_valid_set['y'], dict_predic_valid['y_predicted'], 1)
             
             dict_predict_test = support_vector_classification.get_predicted_output(model, dict_training_set, dict_test_set)
-            dataset.plot_outputs(dict_valid_set['y'], dict_predict_test['y_predicted'], 2)
+            dataset.plot_outputs(dict_test_set['y'], dict_predict_test['y_predicted'], 2)
             
             # %% Get classification report
             classification_report = support_vector_classification.get_classification_report(dict_valid_set['y'], dict_predic_valid['y_predicted'])
