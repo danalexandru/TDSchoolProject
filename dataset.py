@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 27 16:50:11 2019
-
-@author: Dan Alexandru-Bogdan
-"""
 # %% Imports
 from globals import console
 from tkinter.filedialog import askopenfilename

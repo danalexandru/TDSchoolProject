@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 27 14:09:17 2019
-
-@author: Dan Alexandru-Bogdan
-"""
 # %% Imports
 from globals import console
 #from get_csv_files import get_csv_files

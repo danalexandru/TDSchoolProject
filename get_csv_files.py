@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 27 14:14:55 2019
-
-@author: Dan Alexandru-Bogdan
-"""
-
 # %% Imports
 from globals import console
 import pandas as pd
