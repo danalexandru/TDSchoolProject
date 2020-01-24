@@ -553,6 +553,85 @@ class Dataset(object):
             console.log(error_message, console.LOG_ERROR)
             return False
     
+    def save_all_datasets_as_split_datasets_mat(self, dict_datasets):
+        """
+        This method saves all the datasets retrieved as a mat file with the training, valid, test split already made
+        
+        :param dict_datasets: (Dictionary) A dictionary containing the features and targets for all the files selected
+                {
+                    'healthy_data': [
+                    {
+                        'name': <String>,
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
+                    }],
+                    'broken_data': [
+                    {
+                        'name': <String>,
+                        'X': <Numpy Array>,
+                        'y': <Numpy Array>,
+                        'Ts': <Integer>,
+                        'frequency': <Integer>
+                    }]
+                    
+                }
+        :return: Boolean (True of False)
+        """
+        try:
+            healthy_data = []
+            broken_data = []
+            
+            # Get all the training, valid and test splits for the healthy datasets
+            for data in dict_datasets['healthy_data']:
+                [dict_training_set, dict_valid_set, dict_test_set] = self.split_dataset(data)
+                [dict_training_set, dict_valid_set, dict_test_set] = [
+                    self.clean_dataset(dict_training_set),
+                    self.clean_dataset(dict_valid_set),
+                    self.clean_dataset(dict_test_set)
+                ]
+                
+                healthy_data.append({
+                        'name': data['name'],
+                        'Ts': data['Ts'],
+                        'frequency': data['frequency'],
+                        'training': dict_training_set,
+                        'valid': dict_valid_set,
+                        'test': dict_test_set
+                    })
+            
+            # Get all the training, valid and test splits for the broken datasets
+            for data in dict_datasets['broken_data']:
+                [dict_training_set, dict_valid_set, dict_test_set] = self.split_dataset(data)
+                [dict_training_set, dict_valid_set, dict_test_set] = [
+                    self.clean_dataset(dict_training_set),
+                    self.clean_dataset(dict_valid_set),
+                    self.clean_dataset(dict_test_set)
+                ]
+                
+                broken_data.append({
+                        'name': data['name'],
+                        'Ts': data['Ts'],
+                        'frequency': data['frequency'],
+                        'training': dict_training_set,
+                        'valid': dict_valid_set,
+                        'test': dict_test_set
+                    })
+                
+                datasets = {
+                    'healthy_data': healthy_data,
+                    'broken_data': broken_data
+                    }
+                
+                sio.savemat('split_datasets.mat', datasets)
+                
+                return True
+                
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR)
+            return False
+    
 # %% class SuportVectorClassification
 class SupportVectorClassification(object):
     """

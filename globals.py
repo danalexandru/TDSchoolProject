@@ -26,14 +26,25 @@ class Console(object):
         self.LOG_DEFAULT = 0x04
         # endregion console log flags
 
+        self._dark_mode = True
+        
         # region messages color codes
-        self._CODE_RED = '\033[0;31;49m'
-        self._CODE_YELLOW = '\033[0;33;49m'
-        self._CODE_GREEN = '\033[0;32;49m'
-        self._CODE_BLUE = '\033[0;34;49m'
-        self._CODE_WHITE = '\033[0;39;49m'
-        self._CODE_HIGHLIGHT = '\033[0;95;49m'
-        self._CODE_DEFAULT = '\033[0;39;49m'
+        if self._dark_mode is True:
+            self._CODE_RED = '\033[1;31;49m'
+            self._CODE_YELLOW = '\033[1;33;49m'
+            self._CODE_GREEN = '\033[1;32;49m'
+            self._CODE_BLUE = '\033[1;34;49m'
+            self._CODE_WHITE = '\033[1;39;49m'
+            self._CODE_HIGHLIGHT = '\033[1;95;49m'
+            self._CODE_DEFAULT = '\033[1;39;49m'
+        else:
+            self._CODE_RED = '\033[0;31;49m'
+            self._CODE_YELLOW = '\033[0;33;49m'
+            self._CODE_GREEN = '\033[0;32;49m'
+            self._CODE_BLUE = '\033[0;34;49m'
+            self._CODE_WHITE = '\033[0;39;49m'
+            self._CODE_HIGHLIGHT = '\033[0;95;49m'
+            self._CODE_DEFAULT = '\033[0;39;49m'
         # endregion messages color codes
 
         # region message parameters
