@@ -84,7 +84,8 @@ class Dataset(object):
                     'name': filename,
                     'X': X,
                     'y': y,
-                    'Ts': int(filename[5:]),
+#                    'Ts': int(filename[5:]),
+                    'Ts': int(filename[1:3]),
                     'frequency': int(filename[1:3])
                     }
             
