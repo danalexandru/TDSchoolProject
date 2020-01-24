@@ -1,9 +1,14 @@
 %% Description
 % This method returns all the healthy and broken datasets from the
 % 'datasets'.mat file
-function [healthy_data, broken_data] = get_all_datasets()
+function [healthy_data, broken_data] = get_all_datasets(dataset_name)
+%% Check parameters
+if (nargin < 1)
+    dataset_name = 'all_datasets.mat';
+end
+
 %% Load the dataset 
-S = load('all_datasets.mat');
+S = load(dataset_name);
 
 %% Split the dataset 
 healthy_data = S.healthy_data;
