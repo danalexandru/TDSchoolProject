@@ -1,7 +1,7 @@
 %% Description
 % This function will return an ARX model based on the given training set
 % and the valid set
-function [dict_mode_arx] = get_arx_model(training_set, valid_set, Ts)
+function [dict_model_arx] = get_arx_model(training_set, valid_set, Ts)
 %% Check input parameters
 if (nargin < 3)
     Ts = 30;
@@ -14,7 +14,7 @@ valid_data = iddata(valid_set.y, valid_set.X, Ts);
 [~, M] =  size(training_set.X);
 
 %% Initialize model ARX structure
-dict_mode_arx = containers.Map;
+dict_model_arx = containers.Map;
 
 %% Get the ARX polynomial orders for each sensor
 for i = 1 : M
@@ -30,7 +30,7 @@ for i = 1 : M
 
     %% Append the new ARX model to the final result
     str = strcat('sensor_', num2str(i));
-    dict_mode_arx(str) = arx(training_data(:,:,i), order);
+    dict_model_arx(str) = arx(training_data(:,:,i), order);
 end
 
 end
