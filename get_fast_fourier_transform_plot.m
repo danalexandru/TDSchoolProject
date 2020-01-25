@@ -42,6 +42,7 @@ for i = 1 : M
     %% Plot the broken data
     subplot(2, 1, 2);
     plot(1 : Nb, X_fft_broken(:, i));
+    grid on;
     hold on;
     plot(find(X_fft_broken(:, i) == max(X_fft_broken(:, i))), max(X_fft_broken(:, i)), 'ro');
     hold off;
