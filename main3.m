@@ -19,10 +19,38 @@ for i = 1 : length(broken_data)
 end
 
 %% Test ARX Model 
-for i = 1 : length(healthy_data)
+dict_healthy_arx_model_results = containers.Map;
 
+for i = 1 : length(healthy_data)
+    dict_current_arx_models = dict_all_arx_models(strcat('hb', healthy_data(i).files.name(2:end)));
+    
+    struct_prediction_results = struct;
+    for j = 1 : 4
+        arx_model = dict_current_arx_models(strcat('sensor_', num2str(j)));
+
+        struct_prediction_results.y_predicted = mean(filter(arx_model.B, arx_model.A, healthy_data(i).files.test.X(:, j)));
+        struct_prediction_results.y_real = mean(healthy_data(i).files.test.y);
+        struct_prediction_results.error = norm(healthy_data(i).files.test.y - filter(arx_model.B, arx_model.A, healthy_data(i).files.test.X(:, j)));
+        
+        dict_healthy_arx_model_results(healthy_data(i).files.name) = struct_prediction_results;
+    end
 end
 
+dict_broken_arx_model_results = containers.Map;
+for i = 1 : length(broken_data)
+    dict_current_arx_models = dict_all_arx_models(strcat('hb', broken_data(i).files.name(2:end)));
+    
+    struct_prediction_results = struct;
+    for j = 1 : 4
+        arx_model = dict_current_arx_models(strcat('sensor_', num2str(j)));
+
+        struct_prediction_results.y_predicted = mean(filter(arx_model.B, arx_model.A, broken_data(i).files.test.X(:, j)));
+        struct_prediction_results.y_real = mean(broken_data(i).files.test.y);
+        struct_prediction_results.error = norm(healthy_data(i).files.test.y - filter(arx_model.B, arx_model.A, healthy_data(i).files.test.X(:, j)));
+        
+        dict_broken_arx_model_results(broken_data(i).files.name) = struct_prediction_results;
+    end
+end
 
 %% Plot the Fast Fourier Transform for each sensor of a healthy and broken dataset
 dict_fft_data = containers.Map;
