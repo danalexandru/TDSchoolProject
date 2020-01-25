@@ -26,17 +26,19 @@ end
 
 %% Plot results
 for i = 1 : M
-    figure(i);
+    f = figure(i);
     %% Plot the healthy data
     subplot(2, 1, 1);
     plot(1 : Nh, X_fft_healthy(:, i));
     grid on;
     hold on;
     plot(find(X_fft_healthy(:, i) == max(X_fft_healthy(:, i))), max(X_fft_healthy(:, i)), 'ro');
+    plot(1 : Nh, (ones(Nh, 1))*mean(X_fft_healthy(:, i)), '-r');
     hold off;
     title(strcat('Fast Fourier Transform for the healthy dataset: sensor ', num2str(i)));
     legend('Fast Fourier Transform', ...
-        strcat('Max value: ', num2str(max(X_fft_healthy(:, i))))...
+        strcat('Max value: ', num2str(max(X_fft_healthy(:, i)))),...
+        strcat('Mean value: ', num2str(mean(X_fft_healthy(:, i))))...
         );
     
     %% Plot the broken data
@@ -45,12 +47,16 @@ for i = 1 : M
     grid on;
     hold on;
     plot(find(X_fft_broken(:, i) == max(X_fft_broken(:, i))), max(X_fft_broken(:, i)), 'ro');
+    plot(1 : Nb, (ones(Nb, 1))*mean(X_fft_broken(:, i)), '-r');
     hold off;
     title(strcat('Fast Fourier Transform for the broken dataset: sensor ', num2str(i)));
     legend('Fast Fourier Transform', ...
-        strcat('Max value: ', num2str(max(X_fft_broken(:, i))))...
+        strcat('Max value: ', num2str(max(X_fft_broken(:, i)))),...
+        strcat('Mean value: ', num2str(mean(X_fft_broken(:, i))))...
         );
     
+    figure_name = strcat('.\pics\fft_hb', b_data.name(2:end), '_sensor_', num2str(i), '.jpg');
+    saveas(f, figure_name);
 end
 
 end

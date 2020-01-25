@@ -732,7 +732,7 @@ class SupportVectorClassification(object):
             return {
                     'model': model,
                     'y_predicted': y_predicted,
-                    'error': np.sqrt(mean_squared_error(dict_valid_set['y'], y_predicted))
+                    'error': mean_squared_error(dict_valid_set['y'], y_predicted)
                     }
             
         except Exception as error_message:
