@@ -1,7 +1,7 @@
 %% Description
 % This method gets the fast fourier transform for each sensor of a healthy
 % and broken dataset and plots the results
-function [X_fft_healthy, X_fft_broken] = get_fast_fourier_transform_plot(h_data, b_data)
+function [X_fft_healthy, X_fft_broken] = get_fast_fourier_transform_2_plot(h_data, b_data)
 %% Get features and targets for the healthy dataset
 X_healthy = [h_data.training.X; h_data.valid.X; h_data.test.X];
 
@@ -20,8 +20,11 @@ X_fft_healthy = zeros(Nh, M);
 X_fft_broken = zeros(Nb, M);
 
 for i = 1 : M
-    X_fft_healthy(:, i) = abs(fft(X_healthy(:, i)));
-    X_fft_broken(:, i) = abs(fft(X_broken(:, i)));
+    X_fft_healthy(:, i) = fft(X_healthy(:, i));
+    X_fft_broken(:, i) = fft(X_broken(:, i));
+    
+    X_fft_healthy(:, i) = X_fft_healthy(:, i).*conj(X_fft_healthy(:, i));
+    X_fft_broken(:, i) = X_fft_broken(:, i).*conj(X_fft_broken(:, i));
 end
 
 %% Plot results
@@ -55,7 +58,7 @@ for i = 1 : M
         strcat('Mean value: ', num2str(mean(X_fft_broken(:, i))))...
         );
     
-    figure_name = strcat('.\picsfft\\fft_hb', b_data.name(2:end), '_sensor_', num2str(i), '.jpg');
+    figure_name = strcat('.\pics\fft2\fft_2_hb', b_data.name(2:end), '_sensor_', num2str(i), '.jpg');
     saveas(f, figure_name);
 end
 
